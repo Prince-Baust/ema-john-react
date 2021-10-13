@@ -6,6 +6,7 @@ const Cart = ({cart}) => {
     for (const product of cart) {
         total += product.price;
     }
+
     return (
         <div>
             <h2>Order Summary</h2>
