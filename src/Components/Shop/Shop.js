@@ -6,6 +6,7 @@ import {addToDb, getStoredCart} from "../../utilities/fakedb";
 
 const Shop = () => {
     const [products, setProducts] = useState([]);
+    const [displayProducts, setDisplayProducts] = useState([]);
     const [cart, setCart] = useState([]);
 
     const handleAddToCart = (product) => {
@@ -17,7 +18,10 @@ const Shop = () => {
     useEffect( ()=>{
         fetch('products.JSON')
             .then(res => res.json())
-            .then(data => setProducts(data))
+            .then(data => {
+                setProducts(data);
+                setDisplayProducts(data);
+            })
     }, [])
 
     useEffect( ()=> {
@@ -32,15 +36,22 @@ const Shop = () => {
         }
     },[products])
 
+    const handleSearch = (e) => {
+        const searchedItem =  e.target.value;
+        let searchProducts = products.filter(product => product.name.toLowerCase().includes(searchedItem.toLowerCase()));
+        console.log('from handleSearch',searchProducts.length);
+        setDisplayProducts(searchProducts);
+    }
+
     return (
         <>
             <div className="search-container">
-                <input type="text" className="search-input" placeholder="Search Product"/>
+                <input onChange={handleSearch} type="text" className="search-input" placeholder="Search Product"/>
             </div>
             <div className="shop-container">
                 <div className="product-container">
                     {
-                        products.map(product => <Product
+                        displayProducts.map(product => <Product
                             key={product.key}
                             product={product}
                             handleAddToCart = {handleAddToCart}/>)
