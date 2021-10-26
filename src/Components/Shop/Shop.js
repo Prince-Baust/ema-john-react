@@ -11,9 +11,19 @@ const Shop = () => {
     const [cart, setCart] = useState([]);
 
     const handleAddToCart = (product) => {
-        setCart([...cart, product]);
-        // Add to Local Storage
-        addToDb(product.key);
+        const exist = cart.find(pd => pd.key === product.key);
+        let newCart = [];
+
+        if (exist) {
+            const rest = cart.filter(pd => pd.key !== product.key);
+            exist.quantity += 1;
+            newCart = [...rest, exist];
+        } else {
+            product.quantity = 1;
+            newCart = [...cart, product];
+        }
+        setCart(newCart);
+        addToDb(product.key);        // Add to Local Storage
     }
 
     useEffect( ()=>{
